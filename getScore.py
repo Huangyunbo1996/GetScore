@@ -2,6 +2,7 @@ import requests
 from requests import HTTPError
 from bs4 import BeautifulSoup
 import os
+import pymysql
 
 score_baseurl = r'http://jwgl.ynau.edu.cn:9000/bysh/jdDetail.aspx?xh='
 photo_baseurl = r'http://jwgl.ynau.edu.cn/stuphoto/'
@@ -91,4 +92,16 @@ def getScore(year):
 
         
 if __name__=='__main__':
-    getScore(2014)
+    AllCourse = getScore(2014)
+    nowIndex = 0
+    conn = pymysql.connect(host='127.0.0.1',user='root',passwd='wshyb1996',db='mysql',charset='utf8')
+    cur = conn.cursor()
+    cur.execute('USE Score')
+    for id,info in AllCourse.items():
+        cur.execute('INSERT INTO 2014score(id,name,average_score,student_num,pass_rate) VALUES("%s","%s","%s","%s","%s")',(int(id),info[0],info[3],info[1],info[4]/info[1]))
+        nowIndex = nowIndex + 1
+        print('正在向数据库写入数据(%d/%d)'%(nowIndex,len(AllCourse)))
+    cur.connection.commit()
+    cur.close()
+    conn.close()
+    print('数据写入完成。')
