@@ -94,7 +94,7 @@ def getScore(year):
 if __name__=='__main__':
     AllCourse = getScore(2014)
     nowIndex = 0
-    conn = pymysql.connect(host='127.0.0.1',user='root',passwd='wshyb1996',db='mysql',charset='utf8')
+    conn = pymysql.connect(host='127.0.0.1',user='root',passwd='pwd',db='mysql',charset='utf8')
     cur = conn.cursor()
     cur.execute('USE Score')
     for id,info in AllCourse.items():
